@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html;charset=utf-8"/>
+	<title>Releases Timeline</title>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.js"></script>
+	<script type="text/javascript" src="releases-timeline.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.css" />
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+	<link rel="stylesheet" type="text/css" href="releases-timeline.css"></style>
+</head>
+<body class="numix-dark">
+	<div id="top">
+		<button id="back" class="left-float" onclick="back(); return false;"><i class="material-icons md-18">chevron_left</i></button>
+		<button id="hamburger" class="right-float" onclick="menuClicked(); return false;"><i class="material-icons md-18">menu</i></button>
+		<a class="right-float button" target="_blank" title="Source code" href="https://github.com/HebaruSan/releases-timeline"><i class="material-icons md-11">code</i></a>
+		<form action="#" onsubmit="doSearch(this.searchbox.value); return false;">
+			<input type="search" results="8" autosave="releases-timeline-searches"
+				id="searchbox" name="searchbox" class="searchbox"
+				autocomplete="on" autofocus="autofocus" placeholder="User/Repository"
+				oninput="searchChanged(this.value);" />
+			<button class="important" type="submit" value="Submit">Get Timeline</button>
+		</form>
+	</div>
+	<div id="menu" class="right-float" style="display:none;">
+		<div>
+			Theme:
+			<button class="active-numix-dark" onclick="setTheme('numix-dark'); return false;">Numix Dark</button>
+			<button class="active-pristine-dark" onclick="setTheme('pristine-dark'); return false;">Pristine Dark</button>
+			<button class="active-plain" onclick="setTheme('plain'); return false;">Plain</button>
+		</div>
+	</div>
+	<div id="total-downloads"></div>
+	<div id="progress-bar"></div>
+	<div id="content"></div>
+</body>
+</html>

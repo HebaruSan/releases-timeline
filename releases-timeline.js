@@ -227,7 +227,7 @@ function mkTimeline(releaseArray)
 		total_downloads += dlCount(rel);
 		var start = rel.published_at;
 		data.push({
-			id:      i,arth 1.000
+			id:      i,
 			start:   start,
 			end:     prev,
 			title:   rel.name,

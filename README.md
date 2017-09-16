@@ -2,7 +2,7 @@
 
 Shows a timeline of releases for projects hosted on GitHub.
 
-To see it in action, visit the [Releases Timeline](http://hebarusan.github.io/github_stats>) site.
+To see it in action, visit the [Releases Timeline](https://hebarusan.github.io/releases-timeline) site.
 
 ## Acknowledgements
 

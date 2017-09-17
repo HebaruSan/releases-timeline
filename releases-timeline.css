@@ -28,6 +28,17 @@ form {
 	text-align: center;
 	margin:     1em;
 }
+#progress-bar-outer {
+	width:        30%;
+	margin:       1em auto;
+	padding:      1px;
+	border-width: 1px;
+	border-style: solid;
+}
+#progress-bar-inner {
+	height:     2em;
+	transition: width 250ms linear;
+}
 #results {
 	list-style-type: none;
 	position:        fixed;
@@ -183,6 +194,13 @@ body.numix-dark {
 	background-color: #999;
 	color:            #fff;
 }
+.numix-dark #progress-bar-outer {
+	border-color:     #696969;
+	background-color: #696969;
+}
+.numix-dark #progress-bar-inner {
+	background-color: #f0544c;
+}
 
 /* Pristine Dark theme */
 
@@ -243,6 +261,13 @@ body.pristine-dark {
 	background-color: #444;
 	color:            #eee;
 }
+.pristine-dark #progress-bar-outer {
+	border-color:     #121415;
+	background-color: #121415;
+}
+.pristine-dark #progress-bar-inner {
+	background-color: #2b2e31;
+}
 
 /* Plain theme */
 
@@ -256,4 +281,10 @@ body.pristine-dark {
 .plain button.active-plain {
 	background-color: #777;
 	color:            #afa;
+}
+.plain #progress-bar-outer {
+	border-color: #000;
+}
+.plain #progress-bar-inner {
+	background-color: #77f;
 }

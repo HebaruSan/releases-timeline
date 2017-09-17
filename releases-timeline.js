@@ -59,6 +59,7 @@ function handleError(status)
 			SetMessage("Error " + status);
 			break;
 	}
+	setProgress(1);
 }
 
 function findUsers(search)
@@ -107,11 +108,38 @@ function findRepos(search)
 	);
 }
 
+var lastProgressDateTime = null;
+
+function setProgress(fraction)
+{
+	var outer = document.getElementById('progress-bar-outer');
+	var inner = document.getElementById('progress-bar-inner');
+	if (fraction < 1) {
+		outer.style.display  = 'block';
+		inner.style.width    = (100 * fraction) + "%";
+
+		var now = new Date();
+		if (lastProgressDateTime) {
+			var transMs = now - lastProgressDateTime;
+			inner.style.transitionDuration = transMs + "ms";
+		}
+		lastProgressDateTime = now;
+
+	} else {
+		// Done, hide everything
+		outer.style.display  = 'none';
+		inner.style.width    = '0';
+		lastProgressDateTime = null;
+	}
+}
+
 function hasReleasesFilter(inArray, index, outArray, onDone)
 {
 	if (index >= inArray.length) {
+		setProgress(1);
 		onDone(outArray);
 	} else {
+		setProgress(index / inArray.length);
 		checkForReleases(
 			inArray[index].full_name,
 			function() {
@@ -124,8 +152,6 @@ function hasReleasesFilter(inArray, index, outArray, onDone)
 		);
 	}
 }
-
-
 
 function checkForReleases(search, ifYes, ifNo)
 {
@@ -329,21 +355,30 @@ function htmlNode(html)
 	return e;
 }
 
+var cache = {};
+
 function xhr_get(url, jsonPayload, callback, errCallback)
 {
-	var xhr = new XMLHttpRequest();
-	xhr.onload = (function(callback) {
-		return function(evt) {
-			if (this.status === 200) {
-				callback(JSON.parse(this.responseText));
-			} else {
-				errCallback(this.status);
-			}
-		};
-	})(callback);
-	xhr.open('GET', url, true);
-	xhr.setRequestHeader('Content-Type', 'application/json');
-	xhr.send(JSON.stringify(jsonPayload));
+	if (url in cache) {
+		// We have already requested this URL before.
+		// Re-use the result to save API accesses.
+		callback(cache[url]);
+	} else {
+		var xhr = new XMLHttpRequest();
+		xhr.onload = (function(callback) {
+			return function(evt) {
+				if (this.status === 200) {
+					cache[url] = JSON.parse(this.responseText);
+					callback(cache[url]);
+				} else {
+					errCallback(this.status);
+				}
+			};
+		})(callback);
+		xhr.open('GET', url, true);
+		xhr.setRequestHeader('Content-Type', 'application/json');
+		xhr.send(JSON.stringify(jsonPayload));
+	}
 }
 
 window.addEventListener('load', function() {

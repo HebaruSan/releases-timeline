@@ -93,7 +93,7 @@ function findRepos(search)
 				repos.items = repos.items.filter(function(r) { return r && r.has_downloads; });
 				hasReleasesFilter(repos.items, 0, [], function(validArray) {
 					if (validArray && validArray.length > 0) {
-						setOptions(validArray.map(function(r) {return user + "/" + r.name;}));
+						setRepoOptions(validArray);
 					} else {
 						SetMessage("No repositories have releases");
 					}
@@ -106,6 +106,31 @@ function findRepos(search)
 		},
 		handleError
 	);
+}
+
+function setRepoOptions(repoArray)
+{
+	var content = document.getElementById('content');
+	content.parentNode.replaceChild(content.cloneNode(false), content);
+	var content = document.getElementById('content');
+	var list = [];
+	repoArray.sort(function(a, b) {
+		return totalDownloads(b.releases) - totalDownloads(a.releases);
+	});
+	for (var i = 0; i < repoArray.length; ++i) {
+		list.push(elt('li', '', 'hit', [
+			button('', 'choice', '', [
+				elt('span', '', 'num right-float', ['' + totalDownloads(repoArray[i].releases)]),
+				repoArray[i].full_name
+			], (function(repo) {
+				return function(evt) {
+					document.getElementById('searchbox').value = repo.full_name;
+					doSearch(repo.full_name);
+				}
+			})(repoArray[i]))
+		]));
+	}
+	content.appendChild(elt('ul', 'results', '', list));
 }
 
 var lastProgressDateTime = null;
@@ -142,7 +167,8 @@ function hasReleasesFilter(inArray, index, outArray, onDone)
 		setProgress(index / inArray.length);
 		checkForReleases(
 			inArray[index].full_name,
-			function() {
+			function(releaseArray) {
+				inArray[index].releases = releaseArray;
 				outArray.push(inArray[index]);
 				hasReleasesFilter(inArray, index+1, outArray, onDone);
 			},
@@ -160,7 +186,7 @@ function checkForReleases(search, ifYes, ifNo)
 		{},
 		function(releaseArray) {
 			if (releaseArray && releaseArray.length > 0) {
-				ifYes();
+				ifYes(releaseArray);
 			} else {
 				ifNo();
 			}
@@ -247,10 +273,8 @@ function mkTimeline(releaseArray)
 	var data = [];
 	var prev = new Date();
 	database = releaseArray;
-	var total_downloads = 0;
 	for (var i = 0; i < releaseArray.length; ++i) {
 		var rel = releaseArray[i];
-		total_downloads += dlCount(rel);
 		var start = rel.published_at;
 		data.push({
 			id:      i,
@@ -277,7 +301,7 @@ function mkTimeline(releaseArray)
 			window.open(database[props.item].html_url);
 		}
 	});
-	document.getElementById('total-downloads').innerHTML = "Total downloads: " + total_downloads;
+	document.getElementById('total-downloads').innerHTML = "Total downloads: " + totalDownloads(releaseArray);
 	showBack(true);
 }
 
@@ -287,6 +311,15 @@ function timelineEntry(release)
 		elt('div', '', 'ver', [release.tag_name]),
 		elt('div', '', 'num', [""+dlCount(release)])
 	]);
+}
+
+function totalDownloads(releaseArray)
+{
+	var total_downloads = 0;
+	for (var i = 0; i < releaseArray.length; ++i) {
+		total_downloads += dlCount(releaseArray[i]);
+	}
+	return total_downloads;
 }
 
 function dlCount(rel)

@@ -40,11 +40,11 @@ form {
 	transition: width 250ms linear;
 }
 #content {
-	position:        fixed;
-	width: 100%;
-	top:             75px;
-	bottom:          10px;
-	overflow-y:      auto;
+	position:   fixed;
+	width:      100%;
+	top:        75px;
+	bottom:     10px;
+	overflow-y: auto;
 }
 #results {
 	list-style-type: none;
@@ -54,7 +54,7 @@ form {
 	margin: 0 30%;
 }
 .choice {
-	width: 90%;
+	width:  90%;
 	margin: 2px;
 }
 .vis-timeline {
@@ -87,14 +87,16 @@ input {
 	border-style:  solid;
 	padding:       3px;
 	border-radius: 2px;
-	margin:        1em 0.5em;
-	width:         20em;
+}
+#top input {
+	margin: 1em 0.5em;
+	width:  20em;
 }
 input:focus {
-	outline:    none;
+	outline: none;
 }
 input.token {
-	width: 16em;
+	width: 42ex;
 }
 a.button,
 button {
@@ -115,16 +117,47 @@ button .material-icons {
 	font-size:   13pt;
 	font-weight: bold;
 }
-
 #menu {
 	border-width: 1px;
 	border-style: solid;
-	width:        24em;
-	padding:      2em;
 	position:     absolute;
 	top:          55px;
 	right:        0;
 	z-index:      100;
+}
+#menu:before, #menu:after {
+	content:      "";
+	display:      block;
+	position:     absolute;
+	border-style: solid;
+}
+#menu:after {
+	/* Inner */
+	z-index:      1;
+	top:          -16px;
+	right:        1px;
+	width:        0;
+	border-width: 0 16px 16px;
+}
+#menu:before {
+	/* Outer */
+	z-index:      0;
+	top:          -17px;
+	right:        0;
+	border-width: 0 17px 16px;
+}
+.section {
+	width:   29em;
+	margin:  0;
+	padding: 1em;
+}
+.section :first-child {
+	display: inline-block;
+	width: 5em;
+}
+.section + .section {
+	border-top-style: solid;
+	border-top-width: 1px;
 }
 
 /* Numix Dark theme */
@@ -206,6 +239,12 @@ body.numix-dark {
 	box-shadow:       0 2px 4px 2px #2d2d2d;
 	border-color:     #333;
 }
+.numix-dark #menu:after {
+	border-color: #444 transparent;
+}
+.numix-dark #menu:before {
+	border-color: #333 transparent;
+}
 .numix-dark button.active-numix-dark {
 	background-color: #999;
 	color:            #fff;
@@ -216,6 +255,9 @@ body.numix-dark {
 }
 .numix-dark #progress-bar-inner {
 	background-color: #f0544c;
+}
+.numix-dark .section + .section {
+	border-top-color: #3d3d3d;
 }
 
 /* Pristine Dark theme */
@@ -242,6 +284,16 @@ body.pristine-dark {
 .pristine-dark input:focus {
 	background-color: #151c23;
 	box-shadow:       0 0 2px 1px #519fee;
+}
+.pristine-dark a:link,
+.pristine-dark a:visited {
+	color: #729dee;
+	text-decoration: none;
+}
+.pristine-dark a:hover,
+.pristine-dark
+ a:active {
+	text-decoration: underline;
 }
 .pristine-dark a.button,
 .pristine-dark button {
@@ -273,6 +325,12 @@ body.pristine-dark {
 	box-shadow:       0 2px 4px 2px #1a1c18;
 	border-color:     #161719;
 }
+.pristine-dark #menu:after {
+	border-color: #161719 transparent;
+}
+.pristine-dark #menu:before {
+	border-color: #1d1f21 transparent;
+}
 .pristine-dark button.active-pristine-dark {
 	background-color: #444;
 	color:            #eee;
@@ -284,6 +342,9 @@ body.pristine-dark {
 .pristine-dark #progress-bar-inner {
 	background-color: #2b2e31;
 }
+.pristine-dark .section + .section {
+	border-top-color: #1d1e20;
+}
 
 /* Plain theme */
 
@@ -294,6 +355,12 @@ body.pristine-dark {
 .plain #menu {
 	background-color: #fff;
 }
+.plain #menu:after {
+	border-color: #fff transparent;
+}
+.plain #menu:before {
+	border-color: #000 transparent;
+}
 .plain button.active-plain {
 	background-color: #777;
 	color:            #afa;
@@ -303,4 +370,7 @@ body.pristine-dark {
 }
 .plain #progress-bar-inner {
 	background-color: #77f;
+}
+.plain .section + .section {
+	border-top-color: #000;
 }

@@ -8,6 +8,7 @@ var githubToken = null;
 function tokenChanged(token)
 {
 	githubToken = token;
+	localStorage.setItem("githubToken", githubToken);
 }
 
 function doSearch(search)
@@ -60,7 +61,9 @@ function handleError(status)
 {
 	switch (status) {
 		case 403:
-			SetMessage("Too many GitHub API requests, throttled");
+			SetMessage("Too many GitHub API requests, throttled; enter a token to bypass");
+			menuClicked();
+			document.getElementById('token').focus();
 			break;
 		case 404:
 			SetMessage("Not found");
@@ -345,6 +348,7 @@ function dlCount(rel)
 function menuClicked()
 {
 	var menu = document.getElementById('menu');
+	document.getElementById('token').value = githubToken;
 	menu.style.display = ((menu.style.display === "none") ? "block" : "none");
 }
 
@@ -429,6 +433,7 @@ function xhr_get(url, jsonPayload, callback, errCallback)
 
 window.addEventListener('load', function() {
 	doSearch(document.getElementById('searchbox').value);
+	githubToken = localStorage.getItem("githubToken");
 });
 
 document.addEventListener('click', function(evt) {

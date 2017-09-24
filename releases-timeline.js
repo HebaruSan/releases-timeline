@@ -1,4 +1,14 @@
 var lastUserSearch = '';
+var token = '';
+var database = [];
+var cache = {};
+var lastProgressDateTime = null;
+var githubToken = null;
+
+function tokenChanged(token)
+{
+	githubToken = token;
+}
 
 function doSearch(search)
 {
@@ -114,13 +124,18 @@ function setRepoOptions(repoArray)
 	content.parentNode.replaceChild(content.cloneNode(false), content);
 	var content = document.getElementById('content');
 	var list = [];
+	var totalsTotal = 0;
+	for (var i = 0; i < repoArray.length; ++i) {
+		repoArray[i].total_downloads = totalDownloads(repoArray[i].releases);
+		totalsTotal += repoArray[i].total_downloads;
+	}
 	repoArray.sort(function(a, b) {
-		return totalDownloads(b.releases) - totalDownloads(a.releases);
+		return b.total_downloads - a.total_downloads;
 	});
 	for (var i = 0; i < repoArray.length; ++i) {
 		list.push(elt('li', '', 'hit', [
 			button('', 'choice', '', [
-				elt('span', '', 'num right-float', ['' + totalDownloads(repoArray[i].releases)]),
+				elt('span', '', 'num right-float', ['' + repoArray[i].total_downloads]),
 				repoArray[i].full_name
 			], (function(repo) {
 				return function(evt) {
@@ -131,9 +146,8 @@ function setRepoOptions(repoArray)
 		]));
 	}
 	content.appendChild(elt('ul', 'results', '', list));
+	document.getElementById('total-downloads').innerHTML = "Total downloads: " + totalsTotal;
 }
-
-var lastProgressDateTime = null;
 
 function setProgress(fraction)
 {
@@ -248,8 +262,6 @@ function SetMessage(msg)
 	document.getElementById('total-downloads').innerHTML = '';
 	showBack(false);
 }
-
-var database = [];
 
 function mkTimeline(releaseArray)
 {
@@ -388,8 +400,6 @@ function htmlNode(html)
 	return e;
 }
 
-var cache = {};
-
 function xhr_get(url, jsonPayload, callback, errCallback)
 {
 	if (url in cache) {
@@ -410,6 +420,9 @@ function xhr_get(url, jsonPayload, callback, errCallback)
 		})(callback);
 		xhr.open('GET', url, true);
 		xhr.setRequestHeader('Content-Type', 'application/json');
+		if (githubToken && githubToken.length > 0) {
+			xhr.setRequestHeader('Authorization', 'token ' + githubToken);
+		}
 		xhr.send(JSON.stringify(jsonPayload));
 	}
 }

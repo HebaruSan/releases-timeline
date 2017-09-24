@@ -29,6 +29,11 @@
 			<button class="active-pristine-dark" onclick="setTheme('pristine-dark'); return false;">Pristine Dark</button>
 			<button class="active-plain" onclick="setTheme('plain'); return false;">Plain</button>
 		</div>
+		<div>
+			<a href="https://github.com/settings/tokens">Token:</a>
+			<input type="text" id="token" name="token" class="token" autocomplete="off"
+				placeholder="Github token" oninput="tokenChanged(this.value);" />
+		</div>
 	</div>
 	<div id="total-downloads"></div>
 	<div id="content"></div>

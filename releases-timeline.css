@@ -39,15 +39,19 @@ form {
 	height:     2em;
 	transition: width 250ms linear;
 }
-#results {
-	list-style-type: none;
+#content {
 	position:        fixed;
-	left:            30%;
-	right:           30%;
-	top:             50px;
+	width: 100%;
+	top:             75px;
 	bottom:          10px;
 	overflow-y:      auto;
+}
+#results {
+	list-style-type: none;
 	text-align:      center;
+}
+#results li {
+	margin: 0 30%;
 }
 .choice {
 	width: 90%;
@@ -88,6 +92,9 @@ input {
 }
 input:focus {
 	outline:    none;
+}
+input.token {
+	width: 16em;
 }
 a.button,
 button {

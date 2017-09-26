@@ -458,7 +458,9 @@ document.addEventListener('click', function(evt) {
 	var hamburger = document.getElementById('hamburger');
 	if (!descendent_of(menu, evt.target)
 			&& !descendent_of(hamburger, evt.target)) {
-		menu.style.display = "none";
+		if (menu.style.display === "block") {
+			menuClicked();
+		}
 	}
 	return false;
 });

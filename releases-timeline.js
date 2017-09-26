@@ -372,6 +372,7 @@ function menuClicked()
 function setTheme(which)
 {
 	document.body.className = which;
+	localStorage.setItem("theme", which);
 }
 
 function elt(name, id, className, children)
@@ -451,6 +452,10 @@ function xhr_get(url, jsonPayload, callback, errCallback)
 window.addEventListener('load', function() {
 	doSearch(document.getElementById('searchbox').value);
 	githubToken = localStorage.getItem("githubToken");
+	var theme = localStorage.getItem("theme");
+	if (theme) {
+		setTheme(theme);
+	}
 });
 
 document.addEventListener('click', function(evt) {

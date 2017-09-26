@@ -12,7 +12,7 @@ Icons from [Google Material Icons](https://material.io/icons/).
 
 Favicon from [Font Awesome Favicon Generator](https://paulferrett.com/fontawesome-favicon/).
 
-Layout inspired by GNOME's header bars.
+Layout inspired by [GNOME's header bars](https://developer.gnome.org/hig/stable/header-bars.html.en).
 
 Themes inspired by:
 

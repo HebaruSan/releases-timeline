@@ -124,6 +124,18 @@ button .material-icons {
 	top:          55px;
 	right:        0;
 	z-index:      100;
+
+	transition:   transform 0.2s, opacity 0.2s;
+	transform:    translateY(0);
+	opacity:      1;
+}
+#menu.anim-in {
+	transform: translateY(-10px);
+	opacity: 0;
+}
+#menu.anim-out {
+	transform: translateY(10px);
+	opacity: 0;
 }
 #menu:before, #menu:after {
 	content:      "";

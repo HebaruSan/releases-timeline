@@ -349,7 +349,24 @@ function menuClicked()
 {
 	var menu = document.getElementById('menu');
 	document.getElementById('token').value = githubToken;
-	menu.style.display = ((menu.style.display === "none") ? "block" : "none");
+
+	if (menu.style.display === "none") {
+
+		menu.classList.add("anim-in");
+		menu.style.display = "block";
+		setTimeout(function() {
+			menu.classList.remove("anim-in");
+		}, 1);
+
+	} else {
+
+		menu.classList.add("anim-out");
+		setTimeout(function() {
+			menu.style.display = "none";
+			menu.classList.remove("anim-out");
+		}, 200);
+
+	}
 }
 
 function setTheme(which)

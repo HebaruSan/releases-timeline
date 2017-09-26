@@ -100,7 +100,6 @@ input.token {
 }
 a.button,
 button {
-	border-width: 0;
 	padding:      4px 0.5em;
 	font-weight:  bold;
 	font-size:    11pt;
@@ -231,6 +230,7 @@ body.numix-dark {
 }
 .numix-dark a.button,
 .numix-dark button {
+	border-width:     0;
 	background-color: #626262;
 	color:            #eee;
 	box-shadow:       0 1px 2px 1px #3d3d3d;
@@ -242,6 +242,10 @@ body.numix-dark {
 .numix-dark a.button:hover,
 .numix-dark button:hover {
 	background-color: #767676;
+}
+.numix-dark a.button:active,
+.numix-dark button:active {
+	background-color: #353535;
 }
 .numix-dark a.button.important:hover,
 .numix-dark button.important:hover {
@@ -310,6 +314,7 @@ body.pristine-dark {
 }
 .pristine-dark a.button,
 .pristine-dark button {
+	border-width:     0;
 	background-color: #2b2e31;
 	color:            #72766b;
 	box-shadow:       0 1px 2px 1px #181a1b;
@@ -319,6 +324,11 @@ body.pristine-dark {
 .pristine-dark button:hover {
 	background-color: #303337;
 	color:            #d9dbaf;
+}
+.pristine-dark a.button:active,
+.pristine-dark button:active {
+	background-color: #222426;
+	box-shadow:       none;
 }
 .pristine-dark .vis-item {
 	background-color: #292c2f;
@@ -361,9 +371,22 @@ body.pristine-dark {
 
 /* Plain theme */
 
+.plain #top {
+	border-bottom:    1px solid black;
+	background-color: #eef;
+}
+.plain a.button,
+.plain button {
+	-webkit-appearance: button;
+	-moz-appearance:    button;
+	appearance:         button;
+
+	box-sizing:   border-box;
+	color:        #000;
+	font-weight:  normal;
+}
 .plain a.button {
-	background-color: #ddd;
-	color:            #000;
+	padding:      6px 0.5em;
 }
 .plain #menu {
 	background-color: #fff;
@@ -375,8 +398,7 @@ body.pristine-dark {
 	border-color: #000 transparent;
 }
 .plain button.active-plain {
-	background-color: #777;
-	color:            #afa;
+	font-weight:      bold;
 }
 .plain #progress-bar-outer {
 	border-color: #000;

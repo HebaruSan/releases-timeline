@@ -111,10 +111,9 @@ button .right-float {
 	margin:    0;
 	font-size: 10pt;
 }
-a.button .material-icons,
-button .material-icons {
-	font-size:   13pt;
-	font-weight: bold;
+a.button .octicon,
+button .octicon {
+	font-size:   14pt;
 }
 #menu {
 	border-width: 1px;

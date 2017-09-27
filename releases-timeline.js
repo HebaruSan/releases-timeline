@@ -81,6 +81,7 @@ function handleError(status, errors)
 	}
 	setProgress(1);
 	showBack(true);
+	setLinksFromSearch();
 }
 
 function findUsers(search)
@@ -96,6 +97,8 @@ function findUsers(search)
 				SetMessage("User not found: " + search);
 			}
 			showBack(false);
+			setUser("");
+			setRepo("");
 		},
 		handleError
 	);
@@ -119,11 +122,13 @@ function findRepos(search)
 						SetMessage("No repositories have releases");
 					}
 					showBack(true);
+					setLinksFromSearch();
 				});
 			} else {
 				SetMessage("Repository not found: " + search);
 			}
 			showBack(true);
+			setLinksFromSearch();
 		},
 		handleError
 	);
@@ -264,6 +269,45 @@ function showBack(vis)
 	document.getElementById('back').style.display = vis ? "block" : "none";
 }
 
+function setLinksFromSearch()
+{
+	var search = document.getElementById('searchbox').value;
+	var pieces = search.split("/", 2);
+	if (pieces[0] && pieces[0].length > 0) {
+		setUser('https://github.com/' + pieces[0]);
+		if (pieces[1] && pieces[1].length > 0) {
+			setRepo('https://github.com/' + pieces[0] + '/' + pieces[1]);
+		} else {
+			setRepo("");
+		}
+	} else {
+		setUser("");
+		setRepo("");
+	}
+}
+
+function setUser(url)
+{
+	if (url && url.length > 0) {
+		var e = document.getElementById('user');
+		e.href = url;
+		e.style.display = "inline-block";
+	} else {
+		document.getElementById('user').style.display = "none";
+	}
+}
+
+function setRepo(url)
+{
+	if (url && url.length > 0) {
+		var e = document.getElementById('repo');
+		e.href = url;
+		e.style.display = "inline-block";
+	} else {
+		document.getElementById('repo').style.display = "none";
+	}
+}
+
 function SetMessage(msg)
 {
 	var content = document.getElementById('content');
@@ -272,6 +316,7 @@ function SetMessage(msg)
 	content.appendChild(elt('div', '', 'msg', [msg]));
 	document.getElementById('total-downloads').innerHTML = '';
 	showBack(false);
+	setLinksFromSearch();
 }
 
 function mkTimeline(releaseArray)
@@ -279,11 +324,13 @@ function mkTimeline(releaseArray)
 	if (!(releaseArray instanceof Array)) {
 		SetMessage(releaseArray.message);
 		showBack(true);
+		setLinksFromSearch();
 		return;
 	}
 	if (releaseArray.length < 1) {
 		SetMessage("No releases found");
 		showBack(true);
+		setLinksFromSearch();
 		return;
 	}
 	releaseArray = releaseArray.map(function(rel) {
@@ -326,6 +373,7 @@ function mkTimeline(releaseArray)
 	});
 	document.getElementById('total-downloads').innerHTML = "Total downloads: " + totalDownloads(releaseArray);
 	showBack(true);
+	setLinksFromSearch();
 }
 
 function timelineEntry(release)

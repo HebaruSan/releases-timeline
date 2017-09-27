@@ -57,7 +57,7 @@ function back()
 	doSearch(inp.value);
 }
 
-function handleError(status)
+function handleError(status, errors)
 {
 	switch (status) {
 		case 403:
@@ -69,10 +69,18 @@ function handleError(status)
 			SetMessage("Not found");
 			break;
 		default:
-			SetMessage("Error " + status);
+			if (errors && errors.length > 0) {
+				SetMessage(errors.map(
+					function(err) {
+						return err.message;
+					}).join(", "));
+			} else {
+				SetMessage("Error " + status);
+			}
 			break;
 	}
 	setProgress(1);
+	showBack(true);
 }
 
 function findUsers(search)
@@ -218,14 +226,14 @@ function findReleases(search)
 		'https://api.github.com/repos/' + search + '/releases',
 		{},
 		mkTimeline,
-		function(status) {
+		function(status, errors) {
 			switch (status) {
 				case 404:
 					// Search for repositories if nothing matched this text exactly
 					findRepos(search);
 					break;
 				default:
-					handleError(status);
+					handleError(status, errors);
 					break;
 			}
 		}
@@ -436,7 +444,11 @@ function xhr_get(url, jsonPayload, callback, errCallback)
 					cache[url] = JSON.parse(this.responseText);
 					callback(cache[url]);
 				} else {
-					errCallback(this.status);
+					if (this.responseText && this.responseText.length > 0) {
+						errCallback(this.status, JSON.parse(this.responseText).errors);
+					} else {
+						errCallback(this.status);
+					}
 				}
 			};
 		})(callback);

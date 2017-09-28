@@ -100,12 +100,12 @@ input.token {
 }
 a.button,
 button {
-	padding:      4px 0.5em;
-	font-weight:  bold;
-	font-size:    11pt;
-	cursor:       pointer;
-	outline:      none;
-	text-align:   left;
+	padding:     4px 6px;
+	font-weight: bold;
+	font-size:   11pt;
+	cursor:      pointer;
+	text-align:  left;
+	outline:     none;
 }
 button .right-float {
 	margin:    0;
@@ -114,6 +114,8 @@ button .right-float {
 a.button .octicon,
 button .octicon {
 	font-size:   14pt;
+	width:       18px;
+	text-align:  center;
 }
 #menu {
 	border-width: 1px;
@@ -303,7 +305,7 @@ body.pristine-dark {
 }
 .pristine-dark a:link,
 .pristine-dark a:visited {
-	color: #729dee;
+	color:           #729dee;
 	text-decoration: none;
 }
 .pristine-dark a:hover,
@@ -380,12 +382,12 @@ body.pristine-dark {
 	-moz-appearance:    button;
 	appearance:         button;
 
-	box-sizing:   border-box;
-	color:        #000;
-	font-weight:  normal;
+	box-sizing:  border-box;
+	color:       #000;
+	font-weight: normal;
 }
 .plain a.button {
-	padding:      6px 0.5em;
+	padding: 6px 8px;
 }
 .plain #menu {
 	background-color: #fff;
@@ -397,7 +399,7 @@ body.pristine-dark {
 	border-color: #000 transparent;
 }
 .plain button.active-plain {
-	font-weight:      bold;
+	font-weight: bold;
 }
 .plain #progress-bar-outer {
 	border-color: #000;

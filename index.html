@@ -12,11 +12,15 @@
 </head>
 <body class="numix-dark">
 	<div id="top">
-		<button id="back" class="left-float" onclick="back(); return false;"><span class="octicon octicon-chevron-left"></span></button>
+		
+		<button id="back" class="left-float" title="Back" onclick="back(); return false;"><span class="octicon octicon-chevron-left"></span></button>
+		<button id="orig-repo" class="left-float" title="Original fork"><span class="octicon octicon-repo-forked"></span></button>
+
 		<button id="hamburger" class="right-float" onclick="menuClicked(); return false;"><span class="octicon octicon-three-bars"></span></button>
 		<a class="right-float button" target="_blank" title="Timeline source code" href="https://github.com/HebaruSan/releases-timeline"><span class="octicon octicon-code"></span></a>
 		<a id="user" class="right-float button" target="_blank" title="User or organization" href=""><span class="octicon octicon-mark-github"></span></a>
 		<a id="repo" class="right-float button" target="_blank" title="Repository" href=""><span class="octicon octicon-repo"></span></a>
+
 		<form action="#" onsubmit="doSearch(this.searchbox.value); return false;">
 			<input type="search" results="8" autosave="releases-timeline-searches"
 				id="searchbox" name="searchbox" class="searchbox"

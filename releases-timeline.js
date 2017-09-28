@@ -16,6 +16,7 @@ function doSearch(search)
 	// Reset anything that's search-specific
 	SetMessage("Loading...");
 	document.getElementById('total-downloads').innerHTML = '';
+	document.getElementById('orig-repo').style.display = "none";
 
 	// Now figure out what to load
 	if (!search || search.length === 0) {
@@ -26,6 +27,7 @@ function doSearch(search)
 		findRepos(search);
 	} else { // "/" in middle of string
 		findReleases(search);
+		findForkSource(search);
 	}
 	document.getElementById('searchbox').focus();
 }
@@ -110,7 +112,7 @@ function findRepos(search)
 	var user = pieces[0];
 	var repo = pieces[1];
 	xhr_get(
-		'https://api.github.com/search/repositories?q=' + repo + "+in:name+user:" + user + "&sort=stars&order=desc",
+		'https://api.github.com/search/repositories?q=' + repo + "+in:name+fork:true+user:" + user + "&sort=stars&order=desc",
 		{},
 		function(repos) {
 			if (repos && repos.items) {
@@ -152,7 +154,8 @@ function setRepoOptions(repoArray)
 		list.push(elt('li', '', 'hit', [
 			button('', 'choice', '', [
 				elt('span', '', 'num right-float', ['' + repoArray[i].total_downloads]),
-				repoArray[i].full_name
+				elt('span', '', repoArray[i].fork ? 'octicon octicon-repo-forked' : 'octicon octicon-repo'),
+				' ' + repoArray[i].full_name
 			], (function(repo) {
 				return function(evt) {
 					document.getElementById('searchbox').value = repo.full_name;
@@ -242,6 +245,33 @@ function findReleases(search)
 					break;
 			}
 		}
+	);
+}
+
+function findForkSource(search)
+{
+	xhr_get(
+		'https://api.github.com/repos/' + search,
+		{},
+		function(repo) {
+			var e = document.getElementById('orig-repo');
+			if (repo.fork) {
+				// Replace the button with a clone to purge its event listeners
+				e.parentNode.replaceChild(e.cloneNode(true), e);
+				var e = document.getElementById('orig-repo');
+				e.title = repo.source.full_name;
+				e.addEventListener('click', (function(repo) {
+					return function(evt) {
+						document.getElementById('searchbox').value = repo.source.full_name;
+						doSearch(repo.source.full_name);
+					}
+				})(repo));
+				e.style.display = "inline-block";
+			} else {
+				e.style.display = "none";
+			}
+		},
+		handleError
 	);
 }
 

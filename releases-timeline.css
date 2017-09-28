@@ -9,7 +9,8 @@ body {
 }
 form {
 	text-align: center;
-	margin:     0 100px;
+	width:      420px;
+	margin:     0 auto;
 }
 #top a.button,
 #top button {

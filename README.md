@@ -18,3 +18,4 @@ Themes inspired by:
 
 - [Numix](https://numixproject.org/)
 - [Pristine UI](https://atom.io/themes/pristine-ui) with [Atom Dark syntax](https://atom.io/themes/github-atom-dark-syntax)
+- [YouTube new](https://www.youtube.com/new)

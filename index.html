@@ -31,14 +31,13 @@
 	</div>
 	<div id="menu" class="right-float" style="display:none;">
 		<div class="section">
-			<span>Theme:</span>
-			<button class="active-numix-dark" onclick="setTheme('numix-dark'); return false;">Numix Dark</button>
+			<span>Theme:</span><button class="active-numix-dark" onclick="setTheme('numix-dark'); return false;">Numix Dark</button>
 			<button class="active-pristine-dark" onclick="setTheme('pristine-dark'); return false;">Pristine Dark</button>
+			<button class="active-youtube-dark" onclick="setTheme('youtube-dark'); return false;">YouTube Dark</button>
 			<button class="active-plain" onclick="setTheme('plain'); return false;">Plain</button>
 		</div>
 		<div class="section">
-			<a target="_blank" href="https://github.com/settings/tokens">Token:</a>
-			<input type="text" id="token" name="token" class="token" autocomplete="off"
+			<a target="_blank" href="https://github.com/settings/tokens">Token:</a><input type="text" id="token" name="token" class="token" autocomplete="off"
 				placeholder="Github token" oninput="tokenChanged(this.value);" />
 		</div>
 	</div>

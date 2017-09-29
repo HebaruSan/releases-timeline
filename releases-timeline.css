@@ -160,13 +160,18 @@ button .octicon {
 	border-width: 0 17px 16px;
 }
 .section {
-	width:   29em;
+	width:   24em;
 	margin:  0;
-	padding: 1em;
+	padding: 0.75em 0.75em 0.75em 6em;
+}
+.section button,
+.section input {
+	margin: 2px 0;
 }
 .section :first-child {
-	display: inline-block;
-	width: 5em;
+	display:     inline-block;
+	margin-left: -5em;
+	width:       5em;
 }
 .section + .section {
 	border-top-style: solid;
@@ -310,8 +315,7 @@ body.pristine-dark {
 	text-decoration: none;
 }
 .pristine-dark a:hover,
-.pristine-dark
- a:active {
+.pristine-dark a:active {
 	text-decoration: underline;
 }
 .pristine-dark a.button,
@@ -369,6 +373,104 @@ body.pristine-dark {
 }
 .pristine-dark .section + .section {
 	border-top-color: #1d1e20;
+}
+
+/* YouTube Dark theme */
+
+body.youtube-dark {
+	background-color: #111111;
+	color:            #e1e1e1
+}
+.youtube-dark #top {
+	background-color: #232323;
+}
+.youtube-dark input {
+	background-color: #111111;
+	color:            #dcdcdc;
+	border-color:     #303030;
+}
+.youtube-dark input:focus {
+	border-color: #1c62b9;
+}
+.youtube-dark a:link,
+.youtube-dark a:visited {
+	color: #2593e6;
+	text-decoration: none;
+}
+.youtube-dark a:hover {
+	color: #fff;
+}
+.youtube-dark a.button,
+.youtube-dark button {
+	border-width:     0;
+	background-color: transparent;
+	color:            #fff;
+}
+.youtube-dark a.button.important,
+.youtube-dark button.important {
+	background-color: #343434;
+	border-radius: 2px;
+	color: #707070;
+}
+.youtube-dark a.button.important:hover,
+.youtube-dark button.important:hover {
+	color: #999999;
+}
+.youtube-dark #menu {
+	background-color: #232323;
+	border-color:     #232323;
+}
+.youtube-dark #menu:after {
+	border-color: #232323 transparent;
+}
+.youtube-dark #menu:before {
+	border-color: #111111 transparent;
+}
+.youtube-dark #progress-bar-outer {
+	background-color: #232323;
+	border-color:     #111111;
+}
+.youtube-dark #progress-bar-inner {
+	background-color: #4b4b4b;
+}
+.youtube-dark .section + .section {
+	border-top-color: #343434;
+}
+.youtube-dark .active-youtube-dark {
+	background-color: #888888;
+}
+.youtube-dark .hit {
+	background-color: #232323;
+	margin:           0;
+}
+.youtube-dark .hit:hover {
+	background-color: #343434;
+}
+.youtube-dark .hit + .hit {
+	border-top: 1px solid #343434;
+}
+.youtube-dark .hit button {
+	color:            #e5e5e5;
+	font-weight:      normal;
+}
+.youtube-dark .vis-timeline,
+.youtube-dark .vis-panel.vis-center,
+.youtube-dark .vis-time-axis .vis-grid.vis-major,
+.youtube-dark .vis-time-axis .vis-grid.vis-minor {
+	border-color: #242424;
+}
+.youtube-dark .vis-time-axis .vis-text {
+	color: #888888;
+	font-weight: bold;
+}
+.youtube-dark .vis-item {
+	background-color: #232323;
+	border-color: #232323;
+	border-radius: 0;
+	color: #e5e5e5;
+}
+.youtube-dark .vis-item:hover {
+	background-color: #343434;
 }
 
 /* Plain theme */

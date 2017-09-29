@@ -540,13 +540,20 @@ function xhr_get(url, jsonPayload, callback, errCallback)
 }
 
 window.addEventListener('load', function() {
-	doSearch(document.getElementById('searchbox').value);
+	var s = document.getElementById('searchbox');
+	s.value = get_param(document.URL, 'q');
+	doSearch(s.value);
 	githubToken = localStorage.getItem("githubToken");
 	var theme = localStorage.getItem("theme");
 	if (theme) {
 		setTheme(theme);
 	}
 });
+
+function get_param(url, param)
+{
+	return new URLSearchParams(new URL(url).search).get(param);
+}
 
 document.addEventListener('click', function(evt) {
 	var menu = document.getElementById('menu');

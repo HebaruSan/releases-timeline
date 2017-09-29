@@ -27,7 +27,6 @@ function doSearch(search)
 		findRepos(search);
 	} else { // "/" in middle of string
 		findReleases(search);
-		findForkSource(search);
 	}
 	document.getElementById('searchbox').focus();
 }
@@ -83,7 +82,7 @@ function handleError(status, errors)
 	}
 	setProgress(1);
 	showBack(true);
-	setLinksFromSearch();
+	setLinksFromSearch(true);
 }
 
 function findUsers(search)
@@ -124,13 +123,12 @@ function findRepos(search)
 						SetMessage("No repositories have releases");
 					}
 					showBack(true);
-					setLinksFromSearch();
+					setLinksFromSearch(true);
 				});
 			} else {
 				SetMessage("Repository not found: " + search);
+				showBack(true);
 			}
-			showBack(true);
-			setLinksFromSearch();
 		},
 		handleError
 	);
@@ -299,13 +297,13 @@ function showBack(vis)
 	document.getElementById('back').style.display = vis ? "block" : "none";
 }
 
-function setLinksFromSearch()
+function setLinksFromSearch(repoIsFake)
 {
 	var search = document.getElementById('searchbox').value;
 	var pieces = search.split("/", 2);
 	if (pieces[0] && pieces[0].length > 0) {
 		setUser('https://github.com/' + pieces[0]);
-		if (pieces[1] && pieces[1].length > 0) {
+		if (!repoIsFake && pieces[1] && pieces[1].length > 0) {
 			setRepo('https://github.com/' + pieces[0] + '/' + pieces[1]);
 		} else {
 			setRepo("");
@@ -346,7 +344,7 @@ function SetMessage(msg)
 	content.appendChild(elt('div', '', 'msg', [msg]));
 	document.getElementById('total-downloads').innerHTML = '';
 	showBack(false);
-	setLinksFromSearch();
+	setLinksFromSearch(true);
 }
 
 function mkTimeline(releaseArray)
@@ -363,6 +361,7 @@ function mkTimeline(releaseArray)
 		setLinksFromSearch();
 		return;
 	}
+	findForkSource(document.getElementById('searchbox').value);
 	releaseArray = releaseArray.map(function(rel) {
 		rel.published_at = new Date(rel.published_at);
 		return rel;

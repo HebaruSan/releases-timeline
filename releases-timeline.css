@@ -419,6 +419,7 @@ body.youtube-dark {
 .youtube-dark #menu {
 	background-color: #232323;
 	border-color:     #232323;
+	box-shadow:       0 2px 4px 2px #111111;
 }
 .youtube-dark #menu:after {
 	border-color: #232323 transparent;

@@ -476,6 +476,7 @@ body.youtube-dark {
 
 /* Plain theme */
 
+body.plain { }
 .plain #top {
 	border-bottom:    1px solid black;
 	background-color: #eef;

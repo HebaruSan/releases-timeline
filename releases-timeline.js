@@ -1,9 +1,7 @@
-var lastUserSearch = '';
-var token = '';
-var database = [];
-var cache = {};
+var hist                 = [''];
+var cache                = {};
+var githubToken          = null;
 var lastProgressDateTime = null;
-var githubToken = null;
 
 function tokenChanged(token)
 {
@@ -17,6 +15,10 @@ function doSearch(search)
 	SetMessage("Loading...");
 	document.getElementById('total-downloads').innerHTML = '';
 	document.getElementById('orig-repo').style.display = "none";
+
+	if (hist.length < 1 || hist[hist.length - 1] !== search) {
+		hist.push(search);
+	}
 
 	// Now figure out what to load
 	if (!search || search.length === 0) {
@@ -38,23 +40,20 @@ function searchChanged(search)
 	}
 }
 
+function showHideBack()
+{
+	var vis = hist.length > 1;
+	document.getElementById('back').style.display = vis ? "block" : "none";
+}
+
 function back()
 {
+	// Remove current search from stack
 	var inp = document.getElementById('searchbox');
-	var val = inp.value;
-	if (val.includes("/")) {
-		if (val[val.length - 1] === "/") {
-			// Listing a user's repos, go back to prev user search
-			inp.value = lastUserSearch;
-		} else {
-			// Listing a repo, go back to the user
-			inp.value = val.split("/", 2)[0] + "/";
-		}
-	} else {
-		// Listing users, reset
-		inp.value = '';
-	}
-	// Update the display to reflect the new search
+	hist.pop();
+	inp.value = (hist && hist.length > 0)
+	 	? hist[hist.length - 1]
+		: '';
 	doSearch(inp.value);
 }
 
@@ -81,7 +80,7 @@ function handleError(status, errors)
 			break;
 	}
 	setProgress(1);
-	showBack(true);
+	showHideBack();
 	setLinksFromSearch(true);
 }
 
@@ -92,12 +91,11 @@ function findUsers(search)
 		{},
 		function(users) {
 			if (users && users.items) {
-				lastUserSearch = search;
 				setOptions(users.items.map(function(u) {return u.login + "/";}));
 			} else {
 				SetMessage("User not found: " + search);
 			}
-			showBack(false);
+			showHideBack();
 			setUser("");
 			setRepo("");
 		},
@@ -122,12 +120,12 @@ function findRepos(search)
 					} else {
 						SetMessage("No repositories have releases");
 					}
-					showBack(true);
+					showHideBack();
 					setLinksFromSearch(true);
 				});
 			} else {
 				SetMessage("Repository not found: " + search);
-				showBack(true);
+				showHideBack();
 			}
 		},
 		handleError
@@ -151,7 +149,7 @@ function setRepoOptions(repoArray)
 	for (var i = 0; i < repoArray.length; ++i) {
 		list.push(elt('li', '', 'hit', [
 			button('', 'choice', '', [
-				elt('span', '', 'num right-float', ['' + repoArray[i].total_downloads]),
+				elt('span', '', 'num right-float', '' + repoArray[i].total_downloads),
 				elt('span', '', repoArray[i].fork ? 'octicon octicon-repo-forked' : 'octicon octicon-repo'),
 				' ' + repoArray[i].full_name
 			], (function(repo) {
@@ -292,11 +290,6 @@ function setOptions(options)
 	content.appendChild(elt('ul', 'results', '', list));
 }
 
-function showBack(vis)
-{
-	document.getElementById('back').style.display = vis ? "block" : "none";
-}
-
 function setLinksFromSearch(repoIsFake)
 {
 	var search = document.getElementById('searchbox').value;
@@ -341,9 +334,9 @@ function SetMessage(msg)
 	var content = document.getElementById('content');
 	content.parentNode.replaceChild(content.cloneNode(false), content);
 	var content = document.getElementById('content');
-	content.appendChild(elt('div', '', 'msg', [msg]));
+	content.appendChild(elt('div', '', 'msg', msg));
 	document.getElementById('total-downloads').innerHTML = '';
-	showBack(false);
+	showHideBack();
 	setLinksFromSearch(true);
 }
 
@@ -351,13 +344,13 @@ function mkTimeline(releaseArray)
 {
 	if (!(releaseArray instanceof Array)) {
 		SetMessage(releaseArray.message);
-		showBack(true);
+		showHideBack();
 		setLinksFromSearch();
 		return;
 	}
 	if (releaseArray.length < 1) {
 		SetMessage("No releases found");
-		showBack(true);
+		showHideBack();
 		setLinksFromSearch();
 		return;
 	}
@@ -371,7 +364,6 @@ function mkTimeline(releaseArray)
 	});
 	var data = [];
 	var prev = new Date();
-	database = releaseArray;
 	for (var i = 0; i < releaseArray.length; ++i) {
 		var rel = releaseArray[i];
 		var start = rel.published_at;
@@ -397,19 +389,19 @@ function mkTimeline(releaseArray)
 	});
 	timeline.on('click', function(props) {
 		if (props.item !== null) {
-			window.open(database[props.item].html_url);
+			window.open(releaseArray[props.item].html_url);
 		}
 	});
 	document.getElementById('total-downloads').innerHTML = "Total downloads: " + totalDownloads(releaseArray);
-	showBack(true);
+	showHideBack();
 	setLinksFromSearch();
 }
 
 function timelineEntry(release)
 {
 	return elt('div', '', 'tlEntry', [
-		elt('div', '', 'ver', [release.tag_name]),
-		elt('div', '', 'num', [""+dlCount(release)])
+		elt('div', '', 'ver', release.tag_name),
+		elt('div', '', 'num', "" + dlCount(release))
 	]);
 }
 
@@ -488,23 +480,20 @@ function button(id, className, title, children, onClick)
 function addChildren(e, children)
 {
 	try {
-		if (children && children.length) {
-			for (var i = 0; i < children.length; ++i) {
-				e.appendChild(
-					(typeof(children[i]) === 'string')
-						? htmlNode(children[i])
-						: children[i]
-				);
+		if (children) {
+			if (typeof(children) === 'string') {
+				e.appendChild(document.createTextNode(children));
+			} else if (children.length) {
+				for (var i = 0; i < children.length; ++i) {
+					e.appendChild(
+						(typeof(children[i]) === 'string')
+							? document.createTextNode(children[i])
+							: children[i]
+					);
+				}
 			}
 		}
 	} catch (exc) { }
-}
-
-function htmlNode(html)
-{
-	var e = document.createElement('span');
-	e.innerHTML = html;
-	return e;
 }
 
 function xhr_get(url, jsonPayload, callback, errCallback)
@@ -540,31 +529,77 @@ function xhr_get(url, jsonPayload, callback, errCallback)
 
 window.addEventListener('load', function() {
 	var s = document.getElementById('searchbox');
-	s.value = get_param(document.URL, 'q');
+	s.value = get_param(document.URL, 'searchbox');
 	doSearch(s.value);
 	githubToken = localStorage.getItem("githubToken");
 	var theme = localStorage.getItem("theme");
 	if (theme) {
 		setTheme(theme);
 	}
+	// Wire up events
+	document.addEventListener('click', function(evt) {
+		var menu = document.getElementById('menu');
+		var hamburger = document.getElementById('hamburger');
+		if (!descendent_of(menu, evt.target)
+				&& !descendent_of(hamburger, evt.target)) {
+			if (menu.style.display === "block") {
+				menuClicked();
+			}
+		}
+		return false;
+	});
+	document.getElementById('back').addEventListener('click', back);
+	document.getElementById('hamburger').addEventListener('click', menuClicked);
+	document.getElementById('searchbox').addEventListener('input', function(evt) {
+		evt.preventDefault();
+		searchChanged(this.value);
+	});
+	document.getElementById('token').addEventListener('input', function(evt) {
+		evt.preventDefault();
+		tokenChanged(this.value);
+	});
+	document.getElementById('searchform').addEventListener('submit', function(evt) {
+		evt.preventDefault();
+		doSearch(document.getElementById('searchbox').value);
+	});
+
+	// Find themes in the stylesheet, pattern: body.themeName { /* whatever */ }
+	var themeRegex = new RegExp('^body\.([-a-zA-Z0-9_]+)$');
+	for (var i = 0; i < document.styleSheets.length; ++i) {
+		var stsh = document.styleSheets[i];
+		// Stylesheet rules can be null or throw SecurityErrors.
+		try {
+			if (stsh.cssRules) {
+				for (var j = 0; j < stsh.cssRules.length; ++j) {
+					var rule = stsh.cssRules[j];
+					if (rule.type === CSSRule.STYLE_RULE) {
+						var matches = themeRegex.exec(rule.selectorText);
+						if (matches !== null) {
+							mkTheme(matches[1]);
+						}
+					}
+				}
+			}
+		} catch (exc) { }
+	}
 });
+
+function mkTheme(name)
+{
+	var list = document.getElementById('theme-list');
+	var caption = name.replace(/\b\w/g, l => l.toUpperCase()).replace('-', ' ');
+	addChildren(list, [
+		button(name, 'active-' + name, null, caption, function(evt) {
+			setTheme(name);
+		}),
+		' '
+	]);
+}
 
 function get_param(url, param)
 {
 	return new URLSearchParams(new URL(url).search).get(param);
 }
-
-document.addEventListener('click', function(evt) {
-	var menu = document.getElementById('menu');
-	var hamburger = document.getElementById('hamburger');
-	if (!descendent_of(menu, evt.target)
-			&& !descendent_of(hamburger, evt.target)) {
-		if (menu.style.display === "block") {
-			menuClicked();
-		}
-	}
-	return false;
-});
 
 function descendent_of(container, contained)
 {

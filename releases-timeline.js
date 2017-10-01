@@ -2,6 +2,8 @@ var hist                 = [''];
 var cache                = {};
 var githubToken          = null;
 var lastProgressDateTime = null;
+var favorites            = [];
+var cur_repo             = {};
 
 function tokenChanged(token)
 {
@@ -15,6 +17,8 @@ function doSearch(search)
 	SetMessage("Loading...");
 	document.getElementById('total-downloads').innerHTML = '';
 	document.getElementById('orig-repo').style.display = "none";
+	showHideFavorite();
+	setPermalink();
 
 	if (hist.length < 1 || hist[hist.length - 1] !== search) {
 		hist.push(search);
@@ -22,7 +26,7 @@ function doSearch(search)
 
 	// Now figure out what to load
 	if (!search || search.length === 0) {
-		SetMessage("Select a repository");
+		list_favorites();
 	} else if (!search.includes("/")) {
 		findUsers(search);
 	} else if (search[search.length - 1] === "/") {
@@ -137,31 +141,37 @@ function setRepoOptions(repoArray)
 	var content = document.getElementById('content');
 	content.parentNode.replaceChild(content.cloneNode(false), content);
 	var content = document.getElementById('content');
-	var list = [];
-	var totalsTotal = 0;
-	for (var i = 0; i < repoArray.length; ++i) {
-		repoArray[i].total_downloads = totalDownloads(repoArray[i].releases);
-		totalsTotal += repoArray[i].total_downloads;
+	if (repoArray && repoArray.length > 0) {
+		var list = [];
+		var totalsTotal = 0;
+		for (var i = 0; i < repoArray.length; ++i) {
+			if (!repoArray[i].total_downloads) {
+				repoArray[i].total_downloads = totalDownloads(repoArray[i].releases);
+			}
+			totalsTotal += repoArray[i].total_downloads;
+		}
+		repoArray.sort(function(a, b) {
+			return b.total_downloads - a.total_downloads;
+		});
+		for (var i = 0; i < repoArray.length; ++i) {
+			list.push(elt('li', '', 'hit', [
+				button('', 'choice', '', [
+					elt('span', '', 'num right-float', '' + repoArray[i].total_downloads),
+					elt('span', '', repoArray[i].fork ? 'octicon octicon-repo-forked' : 'octicon octicon-repo'),
+					' ' + repoArray[i].full_name
+				], (function(repo) {
+					return function(evt) {
+						document.getElementById('searchbox').value = repo.full_name;
+						doSearch(repo.full_name);
+					}
+				})(repoArray[i]))
+			]));
+		}
+		content.appendChild(elt('ul', 'results', '', list));
+		document.getElementById('total-downloads').innerHTML = "Total downloads: " + totalsTotal;
+	} else {
+		SetMessage("Select a repository");
 	}
-	repoArray.sort(function(a, b) {
-		return b.total_downloads - a.total_downloads;
-	});
-	for (var i = 0; i < repoArray.length; ++i) {
-		list.push(elt('li', '', 'hit', [
-			button('', 'choice', '', [
-				elt('span', '', 'num right-float', '' + repoArray[i].total_downloads),
-				elt('span', '', repoArray[i].fork ? 'octicon octicon-repo-forked' : 'octicon octicon-repo'),
-				' ' + repoArray[i].full_name
-			], (function(repo) {
-				return function(evt) {
-					document.getElementById('searchbox').value = repo.full_name;
-					doSearch(repo.full_name);
-				}
-			})(repoArray[i]))
-		]));
-	}
-	content.appendChild(elt('ul', 'results', '', list));
-	document.getElementById('total-downloads').innerHTML = "Total downloads: " + totalsTotal;
 }
 
 function setProgress(fraction)
@@ -251,6 +261,7 @@ function findForkSource(search)
 		{},
 		function(repo) {
 			var e = document.getElementById('orig-repo');
+			cur_repo.fork = repo.fork;
 			if (repo.fork) {
 				// Replace the button with a clone to purge its event listeners
 				e.parentNode.replaceChild(e.cloneNode(true), e);
@@ -292,8 +303,7 @@ function setOptions(options)
 
 function setLinksFromSearch(repoIsFake)
 {
-	var search = document.getElementById('searchbox').value;
-	var pieces = search.split("/", 2);
+	var pieces = document.getElementById('searchbox').value.split("/", 2);
 	if (pieces[0] && pieces[0].length > 0) {
 		setUser('https://github.com/' + pieces[0]);
 		if (!repoIsFake && pieces[1] && pieces[1].length > 0) {
@@ -392,7 +402,9 @@ function mkTimeline(releaseArray)
 			window.open(releaseArray[props.item].html_url);
 		}
 	});
-	document.getElementById('total-downloads').innerHTML = "Total downloads: " + totalDownloads(releaseArray);
+	var tot_down = totalDownloads(releaseArray);
+	document.getElementById('total-downloads').innerHTML = "Total downloads: " + tot_down;
+	cur_repo.total_downloads = tot_down;
 	showHideBack();
 	setLinksFromSearch();
 }
@@ -528,6 +540,7 @@ function xhr_get(url, jsonPayload, callback, errCallback)
 }
 
 window.addEventListener('load', function() {
+	load_favorites();
 	var s = document.getElementById('searchbox');
 	s.value = get_param(document.URL, 'searchbox');
 	doSearch(s.value);
@@ -561,6 +574,14 @@ window.addEventListener('load', function() {
 	document.getElementById('searchform').addEventListener('submit', function(evt) {
 		evt.preventDefault();
 		doSearch(document.getElementById('searchbox').value);
+	});
+	document.getElementById('favorite').addEventListener('click', function(evt) {
+		var pieces = document.getElementById('searchbox').value.split("/", 2);
+		mk_favorite(pieces[0], pieces[1], cur_repo.fork, cur_repo.total_downloads);
+	});
+	document.getElementById('unfavorite').addEventListener('click', function(evt) {
+		var pieces = document.getElementById('searchbox').value.split("/", 2);
+		rm_favorite(pieces[0], pieces[1]);
 	});
 
 	// Find themes in the stylesheet, pattern: body.themeName { /* whatever */ }
@@ -609,4 +630,92 @@ function descendent_of(container, contained)
 		}
 	}
 	return false;
+}
+
+function setPermalink()
+{
+	var pieces = document.getElementById('searchbox').value.split("/", 2);
+	if (pieces && pieces.length > 1 && pieces[1].length > 0) {
+		var pl = document.getElementById('permalink');
+		pl.style.display = "inline-block";
+		pl.href = location.protocol + location.host + location.port + location.pathname + "?searchbox=" + document.getElementById('searchbox').value;
+	} else {
+		document.getElementById('permalink').style.display = "none";
+	}
+}
+
+/* Favorites */
+
+function showHideFavorite()
+{
+	var pieces = document.getElementById('searchbox').value.split("/", 2);
+	if (pieces && pieces.length > 1 && pieces[1].length > 0) {
+		if (is_favorite(pieces[0], pieces[1])) {
+			document.getElementById(  'favorite').style.display = "none";
+			document.getElementById('unfavorite').style.display = "inline-block";
+		} else {
+			document.getElementById(  'favorite').style.display = "inline-block";
+			document.getElementById('unfavorite').style.display = "none";
+		}
+	} else {
+		document.getElementById(  'favorite').style.display = "none";
+		document.getElementById('unfavorite').style.display = "none";
+	}
+}
+
+function load_favorites()
+{
+	var favs = localStorage.getItem('favorites');
+	if (favs) {
+		favorites = JSON.parse(favs);
+	}
+}
+
+function save_favorites()
+{
+	localStorage.setItem('favorites', JSON.stringify(favorites));
+}
+
+function is_favorite(user, repo)
+{
+	var full_name = user + "/" + repo;
+	var fav = favorites.find(function(f) {
+		return f.full_name === full_name
+	});
+	return fav !== undefined && fav !== null;
+}
+
+function mk_favorite(user, repo, fork, total_downloads)
+{
+	add_favorite(user, repo, {
+		full_name:       user + "/" + repo,
+		fork:            fork,
+		total_downloads: total_downloads
+	});
+}
+
+function add_favorite(user, repo, info)
+{
+	if (!is_favorite(user, repo)) {
+		favorites.push(info);
+		showHideFavorite();
+		save_favorites();
+	}
+}
+
+function rm_favorite(user, repo)
+{
+	if (is_favorite(user, repo)) {
+		var full_name = user + "/" + repo;
+		favorites = favorites.filter(function(f) {
+			return f.full_name !== full_name;
+		});
+		showHideFavorite();
+		save_favorites();
+	}
+}
+
+function list_favorites()
+{
+	setRepoOptions(favorites);
 }

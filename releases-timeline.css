@@ -84,6 +84,7 @@ form {
 	font-size:  14pt;
 }
 input {
+	font-size:     10pt;
 	border-width:  1px;
 	border-style:  solid;
 	padding:       3px;
@@ -132,11 +133,11 @@ button .octicon {
 }
 #menu.anim-in {
 	transform: translateY(-10px);
-	opacity: 0;
+	opacity:   0;
 }
 #menu.anim-out {
 	transform: translateY(10px);
-	opacity: 0;
+	opacity:   0;
 }
 #menu:before, #menu:after {
 	content:      "";
@@ -283,6 +284,16 @@ body.numix-dark {
 .numix-dark .section + .section {
 	border-top-color: #3d3d3d;
 }
+.numix-dark button.outlined {
+	color:       #626262;
+	text-shadow: -1px 0 0 #eee, 1px 0 0 #eee, 0 -1px 0 #eee, 0 1px 0 #eee;
+}
+.numix-dark button.outlined:hover {
+	color: #767676;
+}
+.numix-dark button.outlined:active {
+	color: #353535;
+}
 
 /* Pristine Dark theme */
 
@@ -374,6 +385,17 @@ body.pristine-dark {
 .pristine-dark .section + .section {
 	border-top-color: #1d1e20;
 }
+.pristine-dark button.outlined {
+	color:       #2b2e31;
+	text-shadow: -1px 0 0 #72766b, 1px 0 0 #72766b, 0 -1px 0 #72766b, 0 1px 0 #72766b;
+}
+.pristine-dark button.outlined:hover {
+	color:       #303337;
+	text-shadow: -1px 0 0 #d9dbaf, 1px 0 0 #d9dbaf, 0 -1px 0 #d9dbaf, 0 1px 0 #d9dbaf;
+}
+.pristine-dark button.outlined:active {
+	color: #222426;
+}
 
 /* YouTube Dark theme */
 
@@ -394,7 +416,7 @@ body.youtube-dark {
 }
 .youtube-dark a:link,
 .youtube-dark a:visited {
-	color: #2593e6;
+	color:           #2593e6;
 	text-decoration: none;
 }
 .youtube-dark a:hover {
@@ -409,8 +431,8 @@ body.youtube-dark {
 .youtube-dark a.button.important,
 .youtube-dark button.important {
 	background-color: #343434;
-	border-radius: 2px;
-	color: #707070;
+	border-radius:    2px;
+	color:            #707070;
 }
 .youtube-dark a.button.important:hover,
 .youtube-dark button.important:hover {
@@ -451,8 +473,8 @@ body.youtube-dark {
 	border-top: 1px solid #343434;
 }
 .youtube-dark .hit button {
-	color:            #e5e5e5;
-	font-weight:      normal;
+	color:       #e5e5e5;
+	font-weight: normal;
 }
 .youtube-dark .vis-timeline,
 .youtube-dark .vis-panel.vis-center,
@@ -461,17 +483,21 @@ body.youtube-dark {
 	border-color: #242424;
 }
 .youtube-dark .vis-time-axis .vis-text {
-	color: #888888;
+	color:       #888888;
 	font-weight: bold;
 }
 .youtube-dark .vis-item {
 	background-color: #232323;
-	border-color: #232323;
-	border-radius: 0;
-	color: #e5e5e5;
+	border-color:     #232323;
+	border-radius:    0;
+	color:            #e5e5e5;
 }
 .youtube-dark .vis-item:hover {
 	background-color: #343434;
+}
+.youtube-dark button.outlined {
+	color:       #232323;
+	text-shadow: -1px 0 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, 0 1px 0 #fff;
 }
 
 /* Plain theme */
@@ -514,4 +540,8 @@ body.plain { }
 }
 .plain .section + .section {
 	border-top-color: #000;
+}
+.plain button.outlined {
+	color:       #fff;
+	text-shadow: -1px 0 0 #000, 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000;
 }

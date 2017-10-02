@@ -17,13 +17,15 @@ form {
 	margin-top:    0.75em;
 	margin-bottom: 0.75em;
 }
-.right-float {
-	float:        right;
-	margin-right: 0.75em;
-}
-.left-float {
+.left-float,
+#topleft > * {
 	float:       left;
 	margin-left: 0.75em;
+}
+.right-float,
+#topright > * {
+	float:        right;
+	margin-right: 0.75em;
 }
 #total-downloads {
 	text-align: center;
@@ -126,6 +128,8 @@ button .octicon {
 	top:          55px;
 	right:        0;
 	z-index:      100;
+	float:        right;
+	margin-right: 0.75em;
 
 	transition:   transform 0.2s, opacity 0.2s;
 	transform:    translateY(0);
@@ -169,7 +173,7 @@ button .octicon {
 .section input {
 	margin: 2px 0;
 }
-.section :first-child {
+.section > span:first-child {
 	display:     inline-block;
 	margin-left: -5em;
 	width:       5em;
@@ -177,6 +181,12 @@ button .octicon {
 .section + .section {
 	border-top-style: solid;
 	border-top-width: 1px;
+}
+.section > button,
+.section > a.button {
+	min-width:  3.75em;
+	text-align: center;
+	display:    inline-block;
 }
 
 /* Numix Dark theme */

@@ -405,6 +405,8 @@ function mkTimeline(releaseArray)
 	var tot_down = totalDownloads(releaseArray);
 	document.getElementById('total-downloads').innerHTML = "Total downloads: " + tot_down;
 	cur_repo.total_downloads = tot_down;
+	var pieces = document.getElementById('searchbox').value.split("/", 2);
+	update_favorite(pieces[0], pieces[1], tot_down);
 	showHideBack();
 	setLinksFromSearch();
 }
@@ -700,6 +702,17 @@ function add_favorite(user, repo, info)
 		favorites.push(info);
 		showHideFavorite();
 		save_favorites();
+	}
+}
+
+function update_favorite(user, repo, total_downloads)
+{
+	var full_name = user + "/" + repo;
+	var fav = favorites.find(function(f) {
+		return f.full_name === full_name
+	});
+	if (fav) {
+		fav.total_downloads = total_downloads;
 	}
 }
 

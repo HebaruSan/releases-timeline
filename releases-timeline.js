@@ -402,6 +402,7 @@ function mkTimeline(releaseArray)
 			window.open(releaseArray[props.item].html_url);
 		}
 	});
+
 	var tot_down = totalDownloads(releaseArray);
 	document.getElementById('total-downloads').innerHTML = "Total downloads: " + tot_down;
 	cur_repo.total_downloads = tot_down;
@@ -713,6 +714,7 @@ function update_favorite(user, repo, total_downloads)
 	});
 	if (fav) {
 		fav.total_downloads = total_downloads;
+		save_favorites();
 	}
 }
 

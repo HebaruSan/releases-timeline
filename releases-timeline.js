@@ -641,7 +641,7 @@ function setPermalink()
 	if (pieces && pieces.length > 1 && pieces[1].length > 0) {
 		var pl = document.getElementById('permalink');
 		pl.style.display = "inline-block";
-		pl.href = location.protocol + location.host + location.port + location.pathname + "?searchbox=" + document.getElementById('searchbox').value;
+		pl.href = location.protocol + "//" + location.host + location.port + location.pathname + "?searchbox=" + document.getElementById('searchbox').value;
 	} else {
 		document.getElementById('permalink').style.display = "none";
 	}

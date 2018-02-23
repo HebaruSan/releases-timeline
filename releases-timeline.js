@@ -431,10 +431,13 @@ function totalDownloads(releaseArray)
 
 function dlCount(rel)
 {
-	if (rel && rel.assets && rel.assets[0]) {
-		return rel.assets[0].download_count;
+	var count = 0;
+	if (rel && rel.assets) {
+		for (var i = 0; i < rel.assets.length; ++i) {
+			count += rel.assets[i].download_count;
+		}
 	}
-	return 0;
+	return count;
 }
 
 function menuClicked()
